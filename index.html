@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Balderdash</title>
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body class="introBG">
+<div class="container" id="app">
+	<div class="game-setup"
+		v-if="!allPlayersEntered"
+	>
+		<div class="intro">
+			<div class="intro-check">
+				<h1 class="text-center">BALDERDASH</h1>
+				<h3 class="text-center">Are you the Dasher?</h3>
+				<button class="btn btn-primary"
+					@click="trueDasher = true"
+				>Yup!</button>
+				<button class="btn btn-primary"
+					@click="falseDasher = true"
+				>Nope!</button>
+				<!-- end holdup -->
+			</div>
+			<!-- end introcheck -->
+			<div class="hold-up"
+				v-if="falseDasher"
+			>
+				<h2 class="text-center">Hold Up!</h2>	
+			</div>
+			<div class="dasher"
+				v-if="trueDasher"
+			>	
+				<div class="num-players">
+					<h3 class="text-center">How many players?</h3> 
+					<select class="form-control"
+						v-model="numPlayers"
+					>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+					</select>
+				</div>
+				<!-- end num players -->
+				<div class="dasher-user-name">
+
+					<label for="user-name" class="text-center">Enter Username: </label>
+					<input type="text" name="user-name" class="form-control" value="" 
+						v-model="initUsername"
+					>
+				</div>
+					<button class="btn btn-primary"
+						@click="numplayers()"
+					>
+					GO!
+					</button>
+				</div>
+				<!-- end dasherusername -->
+			</div>
+			<!-- end dasher -->
+			<div class="not-dasher"
+				v-if="!trueDasher"
+			>
+				<label for="user-name">Username: </label>
+				<input type="text" name="user-name" value="" 
+					v-model="subUsernames"
+				>
+				<h3 class="text-center">Select Player Number</h3> 
+					<select class="form-control"
+						v-model="i"
+					>
+					<option 
+						v-for="playersCount in playersCounts | limitBy 7 1" 
+						value="{{ playersCount.playerNum }}"
+					>
+					{{ playersCount.playerNum }}
+					</option>
+
+					</select>
+
+				<button class="btn btn-primary"
+					@click="initPlayers()"
+				>
+				GO!
+				</button>
+			</div>
+		</div>
+
+		<div class="game-play" v-for="curPlayer in curPlayer">
+			<h1 class="text-center">BALDERDASH! GAMEPLAY</h1>
+			<!-- <div class="dasher" 
+				 v-if="curPlayer.dasher"
+			>
+				<h3 class="text-center">Hey {{ curPlayer.username }}</h3>
+
+				<div class="dasher-card {{ curPlayer.username }}">
+					<textarea rows="4" cols="50"
+						v-model="cardText"
+					>
+					</textarea>
+
+					<button class="btn btn-primary first-go"
+						@click="mainGamePlay(curPlayer)"
+					>
+						GO!
+					</button>
+				</div>
+				<div class="player-cards"
+					v-for="card in cards"
+				>
+					<h4 class="text-center">{{ card.username }}</h4>
+					<p>{{ card.text }}</p>
+					<div class="voting-container {{card.username}}">
+						<span class="plus {{ card.username }}"
+							@click="showVotes(card)"
+						>+</span>
+						<span class="votes" v-for="card in cards">
+							<select>
+								<option>-</option>
+								<option 
+									v-for="card in cards" 
+									value="{{card.username}}"
+								>
+								{{card.username}}
+								</option>
+							</select>
+						</span>
+						<span class="minus"
+							@click="removeVotes(card)"
+						>-</span>
+						<button class="btn btn-primary scoreButton"
+							@click="createScore(card)"
+						>Score</button>
+					</div>
+				</div>
+				<button class="text-center btn btn-primary end-round"
+					@click="endRound()"
+					v-if="allSent"
+				>End Round</button>
+				<div class="waiting-div score-dasher">
+					<p class="final-score text-center"
+						v-if="gameEnd"
+					>
+						{{ curPlayer.score }}
+
+					</p>
+					<button class="btn btn-primary restart text-center"
+						@click="restartRound()"
+					>Restart Round</button>
+				</div>
+			</div> -->
+			<!-- <div class="player"
+			 v-if="! curPlayer.dasher"
+			>
+				<h3 class="text-center">Hey {{ curPlayer.username }}</h3>
+				<div class="player-card {{ curPlayer.username }}">
+					<textarea rows="4" cols="50"
+						v-model="cardText"
+					>
+					</textarea>
+					<button class="btn btn-primary first-go"
+						@click="mainGamePlay(curPlayer)"
+					>
+						GO!
+					</button>
+					<div class="waiting-div score-player">
+						<p class="waiting-p text-center">waiting on dasher...</p>
+						<p class="final-score text-center"
+							v-if="gameEnd"
+						>
+							{{ curPlayer.score }}
+						</p>
+					</div>
+				</div>
+			</div> -->
+		</div>
+
+	<pre>
+		{{ $data | json }}
+	</pre>
+	</div>
+	<!-- end intro -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.8/vue.js"></script>
+	<script src="app.js"></script>
+</div>
+<!-- end container -->
+</body>
+</html>

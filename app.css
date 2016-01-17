@@ -1,0 +1,33 @@
+body {
+	background-color: #fff;
+}
+
+body.introBG {
+	background: #ff736d;
+}
+
+body.introBG h1, body.introBG h3 {
+	color: white;
+}
+
+.not-dasher {
+	display: none;
+}
+
+.container button {
+	display: block;
+	margin: 1.5em auto .5em;
+	width: 60%;
+}
+
+.container input {
+	border: 1px solid #cccccc;
+}
+
+.container h1 {
+	font-weight: bold;
+}
+
+.container h1, .container h2, .container h3 {
+	color: #ff736d;
+}
