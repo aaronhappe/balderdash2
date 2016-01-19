@@ -7,6 +7,12 @@
 </head>
 <body class="introBG">
 <div class="container" id="app">
+<div class="restart-modal"><div><p class="text-center">Are you Sure? Restarting will erase all game data.</p><button class="yesRemove btn btn-primary">Yes</button><button class="noRemove btn btn-primary">Close</button></div></div>
+	<div class="menu">
+		<ul>
+			<li><a href="#" class="restart-game">restart game</a></li>
+		</ul>
+	</div>
 	<div class="game-setup"
 		v-if="!allPlayersEntered"
 	>
@@ -89,14 +95,16 @@
 			</div>
 		</div>
 
-		<div class="game-play" v-for="curPlayer in curPlayer">
-			<h1 class="text-center">BALDERDASH! GAMEPLAY</h1>
+		<div class="game-play" 
+			v-for="curPlayer in curPlayer"
+			>
+			<h1 class="text-center">BALDERDASH!</h1>
 			<div class="dasher" 
 				 v-if="curPlayer.dasher"
 			>
 				<h3 class="text-center">Hey {{ curPlayer.username }}</h3>
 
-				<div class="dasher-card {{ curPlayer.username }}">
+				<div class="dasher-card input-card {{ curPlayer.username }}">
 					<textarea rows="4" cols="50"
 						v-model="cardText"
 					>
@@ -152,11 +160,11 @@
 					>Restart Round</button>
 				</div>
 			</div>
-			<!-- <div class="player"
+			<div class="player"
 			 v-if="! curPlayer.dasher"
 			>
 				<h3 class="text-center">Hey {{ curPlayer.username }}</h3>
-				<div class="player-card {{ curPlayer.username }}">
+				<div class="player-card input-card {{ curPlayer.username }}">
 					<textarea rows="4" cols="50"
 						v-model="cardText"
 					>
@@ -166,6 +174,8 @@
 					>
 						GO!
 					</button>
+					
+				</div>
 					<div class="waiting-div score-player">
 						<p class="waiting-p text-center">waiting on dasher...</p>
 						<p class="final-score text-center"
@@ -174,8 +184,7 @@
 							{{ curPlayer.score }}
 						</p>
 					</div>
-				</div>
-			</div> -->
+			</div>
 		</div>
 
 	<pre>
