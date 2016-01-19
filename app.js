@@ -53,7 +53,7 @@
           dasher: false,
           score: 0
         };
-        console.log(this.i);
+        
         switch (this.i) {
           case 2:
             var player2 = player;
@@ -149,7 +149,7 @@
 	        if (appVue.sentAll.length == appVue.numPlayers) {
 	          appVue.allSent = true;
 	        }
-	        	console.log(snapVal); 
+	        	
 	        	appVue.cards.push(snapVal);       	
 	      }
       },
@@ -271,7 +271,6 @@
 		onUserProfilesRefChildAdded: function(){
 	    vars.userProfilesRef.on("child_added", function(snapshot) {
 	    	if (!appVue.allPlayersEntered) {
-	    		console.log('called');
 	    		funcs.initPlayersVue(snapshot);    		
 	    	}
 	    });
@@ -319,16 +318,18 @@
 		},
 		initPlayersVue: function(snapshot){
       var playersEntered = snapshot.val();
+
       if (appVue.playersEntered.length < appVue.numPlayers){
         appVue.playersEntered.push(playersEntered.playerNum);   
       }
 
       if (appVue.playersEntered.length == appVue.numPlayers) {
+
         $.each(appVue.playersCounts, function(index, value) {
           index = index + 1;
           vars.userProfilesRef.child('player' + index).on("value", function(snapshot) {
           	if (!appVue.allPlayersEntered) {
-          		console.log('called');
+
               appVue.players.push(snapshot.val());
           	}
           });
@@ -343,17 +344,16 @@
       vars.gameEndRef.on('child_changed', function(snapshot){
         if (snapshot.val() == true) {
         	appVue.gameEnd = true;
-          console.log('called end game');
+          
            vars.userProfilesRef.on('value', function(snapshot){
-            console.log('here? 1');
+            
             appVue.players = [];
             var objVal = snapshot.val();
             snapshot.forEach(function(childSnapshot){
               appVue.players.push(childSnapshot.val());
             });
           });
-           console.log('here? 2');
-          // $('.game-play .waiting-div').show();
+           
           $('.waiting-p').hide();
           var curPlayerNumb = appVue.curPlayer[0];
           
