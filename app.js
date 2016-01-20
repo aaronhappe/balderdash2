@@ -121,15 +121,12 @@
           	appVue.curPlayerCount = 8;       
             break;
         }
-        		// funcs.mainGamePlay();
+        		
       },
       mainGamePlay: function(curPlayer) {
         $('.input-card').hide();
         $('.waiting-div').show();
-				if(appVue.numPlayers == appVue.curPlayerCount) {
-	    		vars.allPlayersEnteredRef.set({allEntered: true});
-	    	}
-	    	appVue.allPlayersEntered = true; 
+
       	appVue.onCardRefChildAdded(curPlayer);
         vars.cardRef.child(curPlayer.playerNum).set({ playerNum: curPlayer.playerNum, username: curPlayer.username, dasher: curPlayer.dasher, text: appVue.cardText });
       },
@@ -218,7 +215,6 @@
         $('button.end-round').hide();
         vars.userProfilesRef.set(appVue.players);
         vars.gameEndRef.set({gameEnd: true});
-        appVue.gameEnd = true;
         $('.player-cards').hide();
         $('button.restart').show();
       },
@@ -239,6 +235,7 @@
 	};
 	var funcs = {
 		init: function(){
+      vars.gameEndRef.set({gameEnd: false});
 
 			$('.menu').click(function(){
 				$('.menu ul').toggle().parents('div.menu').toggleClass('bg-color');
@@ -260,16 +257,19 @@
         $('body').removeClass('introBG');
       });
 
-      funcs.refreshReset();
+      ;
 
       vars.numPlayersRef.on("value", function(snapshot) {
-				funcs.dasherEntered(snapshot);
+			funcs.dasherEntered(snapshot);
       });
 
       funcs.onUserProfilesRefChildAdded();
+      funcs.refreshReset();
+      funcs.mainGamePlay();
 		},
 		onUserProfilesRefChildAdded: function(){
 	    vars.userProfilesRef.on("child_added", function(snapshot) {
+        console.log('come on');
 	    	if (!appVue.allPlayersEntered) {
 	    		funcs.initPlayersVue(snapshot);    		
 	    	}
@@ -279,6 +279,9 @@
 			vars.allPlayersEnteredRef.on("value", function(snapshot){
 				var existsSnapA = snapshot.exists(),
 				snapValA = snapshot.val();
+        if(existsSnapA) {
+          appVue.allPlayersEntered = true; 
+        }
 				vars.curPlayerRef.on("value", function(snapshot){
 					if (existsSnapA) {
 						if (snapValA.allEntered == true && !appVue.curPlayer.length) {
@@ -322,14 +325,15 @@
       if (appVue.playersEntered.length < appVue.numPlayers){
         appVue.playersEntered.push(playersEntered.playerNum);   
       }
-
+      console.log(1);
       if (appVue.playersEntered.length == appVue.numPlayers) {
-
+       console.log(2);
         $.each(appVue.playersCounts, function(index, value) {
           index = index + 1;
           vars.userProfilesRef.child('player' + index).on("value", function(snapshot) {
+                    console.log(3);
           	if (!appVue.allPlayersEntered) {
-
+        console.log(4);
               appVue.players.push(snapshot.val());
           	}
           });
@@ -337,19 +341,26 @@
       }
 		},
 		mainGamePlay: function(){
+      if(appVue.numPlayers == appVue.curPlayerCount) {
+        vars.allPlayersEnteredRef.set({allEntered: true});
+      }
 			$('game-setup').hide();
 			funcs.onGameEndRefChildChanged();
 		},
 		onGameEndRefChildChanged: function(){
-      vars.gameEndRef.on('child_changed', function(snapshot){
-        if (snapshot.val() == true) {
+
+      vars.gameEndRef.on('value', function(snapshot){
+
+        var snapVal = snapshot.val();
+        if (snapVal.gameEnd ) {
         	appVue.gameEnd = true;
           
            vars.userProfilesRef.on('value', function(snapshot){
-            
+
             appVue.players = [];
-            var objVal = snapshot.val();
+            // var objVal = snapshot.val();
             snapshot.forEach(function(childSnapshot){
+
               appVue.players.push(childSnapshot.val());
             });
           });
