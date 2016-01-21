@@ -127,25 +127,25 @@
         $('.input-card').hide();
         $('.waiting-div').show();
        
-      if(appVue.numPlayers == appVue.playersEntered.length) {
-        vars.allPlayersEnteredRef.set({allEntered: true});
-      }
-        // if(!appVue.allPlayersEntered){
-          vars.cardRef.child(curPlayer.playerNum).set({ playerNum: curPlayer.playerNum, username: curPlayer.username, dasher: curPlayer.dasher, text: appVue.cardText }); 
-          appVue.onCardRefChildAdded(curPlayer);      
-        // } 
-        // else {
-        //   vars.cardRef.child(curPlayer.playerNum).update({
-        //     playerNum: curPlayer.playerNum, username: curPlayer.username, dasher: curPlayer.dasher, text: appVue.cardText
-        //   });
-        //   appVue.onCardRefChildChanged(curPlayer);
-        // }    
+
+        if(!appVue.allPlayersEntered){
+        vars.cardRef.child(curPlayer.playerNum).set({ playerNum: curPlayer.playerNum, username: curPlayer.username, dasher: curPlayer.dasher, text: appVue.cardText }); 
+        appVue.onCardRefChildAdded(curPlayer);      
+        } 
+        else {
+          vars.cardRef.child(curPlayer.playerNum).update({
+            playerNum: curPlayer.playerNum, username: curPlayer.username, dasher: curPlayer.dasher, text: appVue.cardText
+          });
+          appVue.onCardRefChildChanged(curPlayer);
+        }    
+        if(appVue.numPlayers == appVue.playersEntered.length) {
+          vars.allPlayersEnteredRef.set({allEntered: true});
+        }
       },
 			onCardRefChildAdded: function(curPlayer){
         
 	      vars.cardRef.on("child_added", function(snapshot){
 	      	var snapVal = snapshot.val();
-            console.log('call1');
             appVue.sentAll.push(snapVal.playerNum);
             appVue.addCard(curPlayer, snapVal);
 
@@ -162,7 +162,6 @@
 	        if (appVue.sentAll.length == appVue.numPlayers) {
 	          appVue.allSent = true;
 	        }
-            console.log('call2');
 	        	appVue.cards.push(snapVal);       	
       },
       showVotes: function(card){
@@ -228,15 +227,15 @@
       },
       endRound: function(){
         $('button.end-round').hide();
+        vars.gameEndRef.update({gameEnd: true});
         vars.userProfilesRef.set(appVue.players);
-        vars.gameEndRef.set({gameEnd: true});
+
         $('.player-cards').hide();
         $('button.restart').show();
       },
       restartRound: function() {
         $('button.restart').hide();
         vars.restartRoundRef.set({reset: true });
-        console.clear();
       }
 
 
@@ -364,37 +363,37 @@
 			funcs.onGameEndRefChildChanged();
 		},
 		onGameEndRefChildChanged: function(){
-
+      var snapValGameEnd
       vars.gameEndRef.on('value', function(snapshot){
-
-        var snapVal = snapshot.val();
-
-          vars.userProfilesRef.on('value', function(snapshot){
-            if (snapVal.gameEnd ) {
-              appVue.gameEnd = true;
-              appVue.players = [];
-              // var objVal = snapshot.val();
-              snapshot.forEach(function(childSnapshot){
-                appVue.players.push(childSnapshot.val());
-                vars.gameEndRef.set({gameEnd: false}); 
-                appVue.gameEnd = true;  
-              });
-            }
+        snapValGameEnd = snapshot.val();
+        if (snapValGameEnd.gameEnd){
+          appVue.gameEnd = true;
+        }
+      });
+      vars.userProfilesRef.on('value', function(snapshot){
+        if (snapValGameEnd.gameEnd && appVue.allPlayersEntered) {
+        console.log('here');
+          appVue.players = [];
+          snapshot.forEach(function(childSnapshot){
+            appVue.players.push(childSnapshot.val());   
           });
-           
-          $('.waiting-p').hide();
-          var curPlayerNumb = appVue.curPlayer[0];
+        }
+        $('.waiting-p').hide();
+        var curPlayerNumb = appVue.curPlayer[0];
 
-          $.each(appVue.players, function(index, value){
-            if (value.playerNum == curPlayerNumb.playerNum) {
-              curPlayerNumb.score = value.score;
-            }
-          });      
+        $.each(appVue.players, function(index, value){
+          if (value.playerNum == curPlayerNumb.playerNum) {
+            curPlayerNumb.score = value.score;
+          }
+        });   
       });
       funcs.restartRound();
-		},
+    },
+ 
+   
     restartRound: function() {
-      
+      appVue.gameEnd = false;
+      vars.gameEndRef.set({gameEnd: false}); 
       vars.restartRoundRef.on('value', function(snapshot){
         snapVal = snapshot.val();
         if(snapVal.reset == true) {
@@ -408,7 +407,7 @@
           appVue.cardText = "";
           appVue.cards = [];
           appVue.sentAll = [];
-          vars.cardRef = [];
+          vars.cardRef.remove();
 
           if( appVue.restart ){
 
@@ -430,13 +429,13 @@
                     vars.userProfilesRef.child(0).update({dasher: true});
                     break;
                   case 1: 
-                    console.log('2');
+                    
                     dashSet = true;
                     vars.userProfilesRef.child(1).update({dasher: true});         
                     break;
                   case 2:
                     dashSet = true;
-                    console.log('3');
+                    
                     vars.userProfilesRef.child(2).update({dasher: true});        
                     break;
                 }
