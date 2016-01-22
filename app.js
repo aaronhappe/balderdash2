@@ -124,8 +124,10 @@
         		
       },
       mainGamePlay: function(curPlayer) {
-        $('.input-card').hide();
+        $('textarea').hide();
         $('.waiting-div').show();
+        $('.waiting-p').show();
+        $('.first-go').hide();
        
 
         if(!appVue.allPlayersEntered){
@@ -232,6 +234,7 @@
 
         $('.player-cards').hide();
         $('button.restart').show();
+        
       },
       restartRound: function() {
         $('button.restart').hide();
@@ -363,11 +366,14 @@
 			funcs.onGameEndRefChildChanged();
 		},
 		onGameEndRefChildChanged: function(){
+
       var snapValGameEnd
       vars.gameEndRef.on('value', function(snapshot){
         snapValGameEnd = snapshot.val();
         if (snapValGameEnd.gameEnd){
           appVue.gameEnd = true;
+          $('.waiting-p').hide();
+          $('.final-score').show();
         }
       });
       vars.userProfilesRef.on('value', function(snapshot){
@@ -378,7 +384,7 @@
             appVue.players.push(childSnapshot.val());   
           });
         }
-        $('.waiting-p').hide();
+        // $('.waiting-p').hide();
         var curPlayerNumb = appVue.curPlayer[0];
 
         $.each(appVue.players, function(index, value){
@@ -392,8 +398,7 @@
  
    
     restartRound: function() {
-      appVue.gameEnd = false;
-      vars.gameEndRef.set({gameEnd: false}); 
+
       vars.restartRoundRef.on('value', function(snapshot){
         snapVal = snapshot.val();
         if(snapVal.reset == true) {
@@ -401,6 +406,8 @@
           $('.game-play .dasher-card').show();
           $('.game-play .player-card').show();
           $('.game-play .first-go').show();
+          $('.final-score').hide();
+          $('textarea').show();
 
           appVue.restart = true;
           appVue.allSent = false;
@@ -440,7 +447,6 @@
                     break;
                 }
               }
-
                   vars.userProfilesRef.on("value", function(snapshot){
                     if (dashSet) {
                       
@@ -465,7 +471,9 @@
                
           }
         }
-        vars.restartRoundRef.set({reset: false }); 
+        appVue.gameEnd = false;
+        vars.gameEndRef.set({gameEnd: false}); 
+        vars.restartRoundRef.update({reset: false }); 
         appVue.restart = false;      
       });
   
