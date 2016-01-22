@@ -28,9 +28,15 @@
         this.initDasher();
       },
       initDasher: function() {
+        var cUser = appVue.initUsername;
+        cUser = cUser.toLowerCase();
+        cUser = cUser.replace(/[^a-z]/g, ' ');
+        cUser = cUser.replace(/\s/g, '');
+        cUser = cUser.trim();
         var player1 = {
           playerNum: 1,
           username: appVue.initUsername,
+          classUsername: cUser + 1, 
           dasher: true,
           score: 0
         };
@@ -142,11 +148,7 @@
           });
           appVue.onCardRefChildChanged(curPlayer);
         }
-        if (appVue.numPlayers == appVue.playersEntered.length) {
-          vars.allPlayersEnteredRef.set({
-            allEntered: true
-          });
-        }
+
       },
       onCardRefChildAdded: function(curPlayer) {
         vars.cardRef.on("child_added", function(snapshot) {
@@ -221,20 +223,25 @@
         $selectedVotes.each(function() {
           $self = $(this);
           $.each(appVue.players, function(index, value) {
-            if (cardUsername == value.username) {
+            if (cardUsername == value.username && $self.val() != cardUsername ) {
               value.score += 1;
             }
           });
         });
       },
       endRound: function() {
+        if (appVue.numPlayers == appVue.playersEntered.length) {
+          vars.allPlayersEnteredRef.set({
+            allEntered: true
+          });
+        }
         $('button.end-round').hide();
         vars.gameEndRef.update({
           gameEnd: true
         });
         vars.userProfilesRef.set(appVue.players);
         $('.player-cards').hide();
-        $('button.restart').show();
+        $('button.restart').css('display', 'block');
       },
       restartRound: function() {
         $('button.restart').hide();
@@ -370,7 +377,7 @@
         }
       });
       vars.userProfilesRef.on('value', function(snapshot) {
-        if (snapValGameEnd.gameEnd && appVue.allPlayersEntered) {
+        if (snapValGameEnd.gameEnd) {
           appVue.players = [];
           snapshot.forEach(function(childSnapshot) {
             appVue.players.push(childSnapshot.val());
