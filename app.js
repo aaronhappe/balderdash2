@@ -52,9 +52,15 @@
       initPlayers: function() {
         $('.game-play').show();
         $('.not-dasher').hide();
+        var cUser = appVue.subUsernames;
+        cUser = cUser.toLowerCase();
+        cUser = cUser.replace(/[^a-z]/g, ' ');
+        cUser = cUser.replace(/\s/g, '');
+        cUser = cUser.trim();
         player = {
           playerNum: 0,
-          username: this.subUsernames,
+          username: appVue.subUsernames,
+          classUsername: cUser,
           dasher: false,
           score: 0
         };
@@ -62,6 +68,7 @@
           case 2:
             var player2 = player;
             player2.playerNum = this.i;
+            player2.classUsername = cUser + 2;
             this.curPlayer.push(player2);
             vars.userProfilesRef.child('player2').set(player2);
             $.cookie("player", this.i);
@@ -73,6 +80,7 @@
           case 3:
             var player3 = player;
             player3.playerNum = this.i;
+            player3.classUsername = cUser +3;
             this.curPlayer.push(player3);
             vars.userProfilesRef.child('player3').set(player3);
             $.cookie("player", this.i);
@@ -82,6 +90,7 @@
           case 4:
             var player4 = player;
             player4.playerNum = this.i;
+            player4.classUsername = cUser +4;
             this.curPlayer.push(player4);
             vars.userProfilesRef.child('player4').set(player4);
             $.cookie("player", this.i);
@@ -91,6 +100,7 @@
           case 5:
             var player5 = player;
             player5.playerNum = this.i;
+            player5.classUsername = cUser +5;
             this.curPlayer.push(player5);
             vars.userProfilesRef.child('player5').set(player5);
             $.cookie("player", this.i);
@@ -100,6 +110,7 @@
           case 6:
             var player6 = player;
             player6.playerNum = this.i;
+            player6.classUsername = cUser +6;
             this.curPlayer.push(player6);
             vars.userProfilesRef.child('player6').set(player6);
             $.cookie("player", this.i);
@@ -109,6 +120,7 @@
           case 7:
             var player7 = player;
             player7.playerNum = this.i;
+            player7.classUsername = cUser +7;
             this.curPlayer.push(player7);
             vars.userProfilesRef.child('player7').set(player7);
             $.cookie("player", this.i);
@@ -118,6 +130,7 @@
           case 8:
             var player8 = player;
             player8.playerNum = this.i;
+            player8.classUsername = cUser +8;
             this.curPlayer.push(player8);
             vars.userProfilesRef.child('player8').set(player8);
             $.cookie("player", this.i);
@@ -135,6 +148,7 @@
           vars.cardRef.child(curPlayer.playerNum).set({
             playerNum: curPlayer.playerNum,
             username: curPlayer.username,
+            classUsername: curPlayer.classUsername,
             dasher: curPlayer.dasher,
             text: appVue.cardText
           });
@@ -143,6 +157,7 @@
           vars.cardRef.child(curPlayer.playerNum).update({
             playerNum: curPlayer.playerNum,
             username: curPlayer.username,
+            classUsername: curPlayer.classUsername,
             dasher: curPlayer.dasher,
             text: appVue.cardText
           });
@@ -170,14 +185,14 @@
         appVue.cards.push(snapVal);
       },
       showVotes: function(card) {
-        var userClass = card.username;
+        var userClass = card.classUsername;
         $('span.' + userClass).last('.votes').next('.votes').addClass(
-          card.username).css('display', 'inline-block');
+          card.classUsername).css('display', 'inline-block');
         $('span.' + userClass).siblings('span.minus').css('display',
           'inline-block');
       },
       removeVotes: function(card) {
-        var userClass = card.username,
+        var userClass = card.classUsername,
           minusClass = $('span.' + userClass).siblings('span.minus');
         $('span.' + userClass).last().hide().removeClass(userClass);
         //I'll figure this out later. Not essential.
@@ -186,7 +201,7 @@
         // }
       },
       createScore: function(card) {
-        $('.voting-container.' + card.username).hide();
+        $('.voting-container.' + card.classUsername).hide();
         if (card.dasher) {
           this.scoreDasherCard(card);
         } else {
@@ -194,7 +209,7 @@
         }
       },
       scoreDasherCard: function(card) {
-        var $selectedVotes = $('span.' + card.username +
+        var $selectedVotes = $('span.' + card.classUsername +
             ' option:selected'),
           cardUsername = card.username;
         $selectedVotes.each(function() {
@@ -217,7 +232,7 @@
         });
       },
       scorePlayersCards: function(card) {
-        var $selectedVotes = $('span.' + card.username +
+        var $selectedVotes = $('span.' + card.classUsername +
             ' option:selected'),
           cardUsername = card.username;
         $selectedVotes.each(function() {

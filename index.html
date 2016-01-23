@@ -105,7 +105,7 @@
 				<h4 class="text-center">DASHER</h4>
 				<h3 class="text-center">Hey {{ curPlayer.username }}</h3>
 
-				<div class="dasher-card input-card {{curPlayer.username}}">
+				<div class="dasher-card input-card {{curPlayer.classUsername}}">
 					<textarea rows="4" cols="50"
 						v-model="cardText"
 					>
@@ -127,8 +127,8 @@
 					</h5>
 					<h4 class="text-center">{{ card.username }}</h4>
 					<p>{{ card.text }}</p>
-					<div class="voting-container {{card.username}}">
-						<span class="plus {{ card.username }}"
+					<div class="voting-container {{card.classUsername}}">
+						<span class="plus {{ card.classUsername }}"
 							@click="showVotes(card)"
 						>+</span>
 						<span class="votes" v-for="card in cards">
@@ -170,7 +170,7 @@
 			 v-if="! curPlayer.dasher"
 			>
 				<h3 class="text-center">Hey {{ curPlayer.username }}</h3>
-				<div class="player-card input-card {{ curPlayer.username }}">
+				<div class="player-card input-card {{ curPlayer.classUsername }}">
 					<textarea rows="4" cols="50"
 						v-model="cardText"
 					>

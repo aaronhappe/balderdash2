@@ -142,4 +142,5 @@ body.introBG h1, body.introBG h3 {
 
 .game-play .restart {
 	display: none;
+	margin: 0 auto;
 }
